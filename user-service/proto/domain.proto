@@ -1,0 +1,150 @@
+/**
+ * Copyright 2021 Lightbend Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Specify the version of the Protobuf syntax
+ */
+syntax = "proto3";
+
+/**
+  * Packages prevent name clashes between protocol messages
+  */
+package com.coreyauger.lovebomb.user;
+
+/**
+ * Imports allow you to use definitions from other protobuf files.
+ */
+import "akkaserverless/annotations.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+
+message User {
+    string id = 1 [(.akkaserverless.field).entity_key = true];   
+    string ig_id = 2; 
+    uint32 followers_count = 3;
+    uint32 follows_count = 4;
+    uint32 media_count = 5;
+    string name = 6;
+    string profile_picture_url = 7;
+    string username = 8;
+    string website = 9;
+
+    /* extended fileds */
+    uint32 bomber_score = 10;
+    repeated string following = 11;
+}
+
+
+message GetUserRequest {
+    string id = 1 [(.akkaserverless.field).entity_key = true];
+}
+
+
+message GetUsersByBomberScoreRequest {
+    uint32 score = 1;
+    // TODO: paging
+}
+
+message GetUsersByUsername {
+    string username = 1;    
+}
+
+message GetUsers {
+    uint32 score = 1;
+    // TODO: paging
+}
+
+service UserService {
+    /**
+     * The entity type determines what kind of prefix entities get
+     * when persisted
+     */
+    option (.akkaserverless.service).entity.type = ".persistence.User";
+
+    rpc SaveUser(User) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/user/{id}"
+            body: "*"
+        };
+    }
+}
+
+service GetUsersService {
+    rpc UpdateUser(User) returns (User) {
+        option (.akkaserverless.method).eventing = {
+            in: {
+                value_entity: "user"
+            }
+        };
+        option (.akkaserverless.method).view.update = {
+            table: "user"
+        };
+    }
+
+    rpc GetUser(User) returns (stream User) {
+        option (.akkaserverless.method).view.query = {
+            query: "SELECT * FROM user WHERE id = :id"
+        };
+        option (google.api.http) = {
+            get: "/user/id"
+        };
+    }
+}
+
+service GetUserByUsernameService {
+    rpc UpdateUser(User) returns (User) {
+        option (.akkaserverless.method).eventing = {
+            in: {
+                value_entity: "user" // this is the entity type
+            }
+        };
+        option (.akkaserverless.method).view.update = {
+            table: "usernameuser"
+        };
+    }
+
+    rpc GetUserByUsername(GetUsersByUsername) returns (stream User) {
+        option (.akkaserverless.method).view.query = {
+            query: "SELECT * FROM usernameuser WHERE username = :username"
+        };
+        option (google.api.http) = {
+            get: "/user/username"
+        };
+    }
+}
+
+service AllUsersService {
+    rpc UpdateUser(User) returns (User) {
+        option (.akkaserverless.method).eventing = {
+            in: {
+                value_entity: "user" // this is the entity type
+            }
+        };
+        option (.akkaserverless.method).view.update = {
+            table: "allusers"
+        };
+    }
+
+    rpc GetAllUsers(GetUsers) returns (stream User) {
+        option (.akkaserverless.method).view.query = {
+            query: "SELECT * FROM allusers"
+        };
+        option (google.api.http) = {
+            get: "/user/username"
+        };
+    }
+}
