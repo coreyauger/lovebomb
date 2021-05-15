@@ -33,19 +33,26 @@ import "google/protobuf/empty.proto";
 
 
 message User {
-    string id = 1 [(.akkaserverless.field).entity_key = true];   
-    string ig_id = 2; 
-    uint32 followers_count = 3;
-    uint32 follows_count = 4;
-    uint32 media_count = 5;
-    string name = 6;
-    string profile_picture_url = 7;
-    string username = 8;
-    string website = 9;
+    string username = 1 [(.akkaserverless.field).entity_key = true];     
 
-    /* extended fileds */
-    uint32 bomber_score = 10;
-    repeated string following = 11;
+    /* IG fields */
+    string biography = 11;
+    string external_url = 12;
+    uint32 followed_by_count = 13;
+    string fbid = 14;
+    uint32 follow_count = 15;
+    string full_name = 16;
+    string id  = 17;
+    bool is_business_account = 18;
+    bool is_professional_account = 19;
+    bool is_joined_recently = 20;
+    string category_name = 21;
+    string profile_pic_url = 22;
+    string profile_pic_url_hd = 23;
+    bool should_show_category = 24;
+      
+    /* extended fields */
+    uint32 bomber_score = 25;
 }
 
 
@@ -59,13 +66,15 @@ message GetUsersByBomberScoreRequest {
     // TODO: paging
 }
 
-message GetUsersByUsername {
-    string username = 1;    
+message GetUsersByScore {
+    string score = 1;
+    uint32 skip = 2;
+    uint32 limit = 3;
 }
 
 message GetUsers {
-    uint32 score = 1;
-    // TODO: paging
+    uint32 skip = 1;
+    uint32 limit = 2;
 }
 
 service UserService {
@@ -97,15 +106,15 @@ service GetUsersService {
 
     rpc GetUser(User) returns (stream User) {
         option (.akkaserverless.method).view.query = {
-            query: "SELECT * FROM user WHERE id = :id"
+            query: "SELECT * FROM user WHERE username = :username"
         };
         option (google.api.http) = {
-            get: "/user/id"
+            get: "/user/username"
         };
     }
 }
 
-service GetUserByUsernameService {
+service GetUserByScoreService {
     rpc UpdateUser(User) returns (User) {
         option (.akkaserverless.method).eventing = {
             in: {
@@ -113,16 +122,16 @@ service GetUserByUsernameService {
             }
         };
         option (.akkaserverless.method).view.update = {
-            table: "usernameuser"
+            table: "scoreuser"
         };
     }
 
-    rpc GetUserByUsername(GetUsersByUsername) returns (stream User) {
+    rpc GetUserByScore(GetUsersByScore) returns (stream User) {
         option (.akkaserverless.method).view.query = {
-            query: "SELECT * FROM usernameuser WHERE username = :username"
+            query: "SELECT * FROM scoreuser WHERE score < :score"
         };
         option (google.api.http) = {
-            get: "/user/username"
+            get: "/user/scoreuser"
         };
     }
 }

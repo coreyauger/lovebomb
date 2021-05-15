@@ -1,0 +1,36 @@
+{
+  "name": "@coreyauger/lovebomb-cloudrun-instagram",
+  "version": "0.1.6",
+  "description": "Lovebomb Instagram",
+  "license": "MIT",
+  "main": "./app/index.js",
+  "author": {
+    "name": "coreyauger"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "lint": "eslint src/**/*.ts",
+    "container:build": "docker build . -t coreyauger/lovebomb-cloudrun-instagram:$npm_package_version",
+    "container:push": "docker push coreyauger/lovebomb-cloudrun-instagram:$npm_package_version"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.3.2",
+    "@grpc/proto-loader": "^0.5.5",
+    "@improbable-eng/grpc-web": "^0.14.0",
+    "@improbable-eng/grpc-web-node-http-transport": "^0.14.0",
+    "@lightbend/akkaserverless-javascript-sdk": "^0.7.0-beta.6",
+    "dotenv": "^9.0.2",
+    "google-protobuf": "^3.14.0",
+    "instagram-web-api": "^2.2.2",
+    "protoc-gen-ts": "^0.3.6-rc4",
+    "rxjs": "^7.0.1",
+    "ts-proto": "^1.80.0"
+  },
+  "devDependencies": {
+    "@types/google-protobuf": "^3.15.2",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "eslint": "^7.24.0",
+    "typescript": "^4.1.3"
+  }
+}

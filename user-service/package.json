@@ -1,6 +1,6 @@
 {
   "name": "@coreyauger/lovebomb-user-service",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Lovebomb User - Value Entity Service",
   "license": "MIT",
   "main": "./app/index.js",
@@ -8,8 +8,8 @@
     "name": "coreyauger"
   },
   "scripts": {
-    "pretest": "compile-descriptor ./proto/domain.proto ",
-    "build": "compile-descriptor ./proto/domain.proto && rm -rf ./app && tsc",
+    "pretest": "compile-descriptor ./proto/user-service.proto ",
+    "build": "compile-descriptor ./proto/user-service.proto && rm -rf ./app && tsc",
     "start": "node ./app/index.js",
     "lint": "eslint src/**/*.ts",
     "container:build": "docker build . -t coreyauger/lovebomb-user:$npm_package_version",
@@ -22,8 +22,8 @@
     "devmode:container:stop": "docker stop userfunction && docker rm userfunction"
   },
   "dependencies": {
-    "@grpc/proto-loader": "^0.5.5",
     "@lightbend/akkaserverless-javascript-sdk": "^0.7.0-beta.6",
+    "@grpc/proto-loader": "^0.5.5",
     "google-protobuf": "^3.14.0",
     "grpc": "^1.24.9"
   },

@@ -77,11 +77,11 @@ export const GetUsersService = new as.View(
   }
 );
 
-export const GetUserByUsernameService = new as.View(
+export const GetUserByScoreService = new as.View(
   ["./proto/domain.proto"],
-  "com.coreyauger.lovebomb.user.GetUserByUsernameService",
+  "com.coreyauger.lovebomb.user.GetUserByScoreService",
   {
-    viewId: "usernameuser",
+    viewId: "scoreuser",
   }
 );
 

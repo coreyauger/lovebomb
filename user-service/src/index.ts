@@ -17,13 +17,13 @@ import * as as from "@lightbend/akkaserverless-javascript-sdk";
 import {
   UserEntity,
   AllUsersService,
-  GetUserByUsernameService,
   GetUsersService,
+  GetUserByScoreService,
 } from "./UserService";
 
 const server = new as.AkkaServerless();
 server.addComponent(UserEntity);
 server.addComponent(AllUsersService);
-server.addComponent(GetUserByUsernameService);
+server.addComponent(GetUserByScoreService);
 server.addComponent(GetUsersService);
 server.start({ bindAddress: "0.0.0.0", bindPort: "8080" });
