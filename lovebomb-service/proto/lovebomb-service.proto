@@ -1,0 +1,167 @@
+/**
+ * Copyright 2021 Lightbend Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Specify the version of the Protobuf syntax
+ */
+syntax = "proto3";
+
+/**
+  * Packages prevent name clashes between protocol messages
+  */
+package com.coreyauger.lovebomb.lovebomb;
+
+/**
+ * Imports allow you to use definitions from other protobuf files.
+ */
+import "akkaserverless/annotations.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+message Dimensions{
+    uint32 width = 1;
+    uint32 height = 2;
+}
+
+message Owner{
+    string id = 1;
+    string username = 2;
+    string profile_pic_url = 3;
+    string full_name = 4;
+}
+
+message DisplayResource{
+    string src = 1;
+    Dimensions config = 2;
+}
+
+message Lovebomb {
+    string id = 1 [(.akkaserverless.field).entity_key = true];     
+    enum MediaType{
+        IMAGE = 0;
+        VIDEO = 1;
+    }    
+    MediaType type_name = 2;
+    Dimensions dimensions = 3;
+    string display_url = 4;
+    repeated DisplayResource display_resource = 5;
+    string accessibility_caption = 6;    
+    bool has_audio = 7;
+    string video_url = 8;
+    string shortcode = 9;
+    float video_duration = 10;
+    string title = 11;
+    string thumbnail_src = 12;
+    Owner owner = 13;
+    uint32 video_view_count = 14;
+}
+
+
+message GetLovebombRequest {
+    string id = 1 [(.akkaserverless.field).entity_key = true];
+}
+
+
+message GetLovebombsByUsernameRequest {
+    string username = 1;
+    // TODO: paging
+}
+
+message GetLovebombs {
+    uint32 skip = 1;
+    uint32 limit = 2;
+}
+
+service LovebombService {
+    /**
+     * The entity type determines what kind of prefix entities get
+     * when persisted
+     */
+    option (.akkaserverless.service).entity.type = ".persistence.Lovebomb";
+
+    rpc SaveLovebomb(Lovebomb) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            post: "/lovebomb/{id}"
+            body: "*"
+        };
+    }
+}
+
+service GetLovebombService {
+    rpc UpdateLovebomb(Lovebomb) returns (Lovebomb) {
+        option (.akkaserverless.method).eventing = {
+            in: {
+                value_entity: "lovebomb"
+            }
+        };
+        option (.akkaserverless.method).view.update = {
+            table: "lovebomb"
+        };
+    }
+
+    rpc GetLovebomb(GetLovebombRequest) returns (Lovebomb) {
+        option (.akkaserverless.method).view.query = {
+            query: "SELECT * FROM lovebomb WHERE lovebomb = :id"
+        };
+        option (google.api.http) = {
+            get: "/lovebomb/id"
+        };
+    }
+}
+
+service GetLovebombByUsernameService {
+    rpc UpdateLovebomb(Lovebomb) returns (Lovebomb) {
+        option (.akkaserverless.method).eventing = {
+            in: {
+                value_entity: "lovebomb" // this is the entity type
+            }
+        };
+        option (.akkaserverless.method).view.update = {
+            table: "usernamelovebomb"
+        };
+    }
+
+    rpc GetLovebombsByUsername(GetLovebombsByUsernameRequest) returns (stream Lovebomb) {
+        option (.akkaserverless.method).view.query = {
+            query: "SELECT * FROM usernamelovebomb WHERE owner.username < :username"
+        };
+        option (google.api.http) = {
+            get: "/lovebomb/username"
+        };
+    }
+}
+
+service AllLovebombService {
+    rpc UpdateLovebomb(Lovebomb) returns (Lovebomb) {
+        option (.akkaserverless.method).eventing = {
+            in: {
+                value_entity: "lovebomb" // this is the entity type
+            }
+        };
+        option (.akkaserverless.method).view.update = {
+            table: "alllovebomb"
+        };
+    }
+
+    rpc GetAllLovebombs(GetLovebombs) returns (stream Lovebomb) {
+        option (.akkaserverless.method).view.query = {
+            query: "SELECT * FROM alllovebomb"
+        };
+        option (google.api.http) = {
+            get: "/lovebomb"
+        };
+    }
+}

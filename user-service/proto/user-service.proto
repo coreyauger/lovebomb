@@ -104,7 +104,7 @@ service GetUsersService {
         };
     }
 
-    rpc GetUser(User) returns (stream User) {
+    rpc GetUser(GetUserRequest) returns (User) {
         option (.akkaserverless.method).view.query = {
             query: "SELECT * FROM user WHERE username = :username"
         };
@@ -153,7 +153,7 @@ service AllUsersService {
             query: "SELECT * FROM allusers"
         };
         option (google.api.http) = {
-            get: "/user/username"
+            get: "/users"
         };
     }
 }

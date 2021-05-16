@@ -19,10 +19,10 @@ import * as as from "@lightbend/akkaserverless-javascript-sdk";
  * The PersonEntity uses the ValueEntity state model in Akka Serverless.
  * This function creates a new Value Entity state model for the contact entity.
  */
-export const UserEntity = new as.ValueEntity(
-  ["./proto/user-service.proto"],
-  "com.coreyauger.lovebomb.user.UserService",
-  "user",
+export const LovebombEntity = new as.ValueEntity(
+  ["./proto/lovebomb-service.proto"],
+  "com.coreyauger.lovebomb.lovebomb.LovebombService",
+  "lovebomb",
   {
     // A snapshot will be persisted every time this many events are emitted.
     snapshotEvery: 100,
@@ -43,52 +43,52 @@ export const UserEntity = new as.ValueEntity(
 /**
  * Create types to work with events
  */
-const user = UserEntity.lookupType("com.coreyauger.lovebomb.user.User");
+const lovebomb = LovebombEntity.lookupType(
+  "com.coreyauger.lovebomb.lovebomb.Lovebomb"
+);
 
-UserEntity.setInitial((username) => user.create({ username }));
+LovebombEntity.setInitial((id) => lovebomb.create({ id }));
 
-UserEntity.commandHandlers = {
+LovebombEntity.commandHandlers = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  SaveUser: saveUser,
+  SaveLovebomb: saveLovebomb,
 };
 
 /**
- * addPersonDetails is the entry point for the API to handle requests. In this case, the
- * code makes sure the person ID is always set to the entity ID so it can't be overwritten.
- * The state is an empty place holder.
+ * add a lovebomb
  *
- * @param {*} userInfo The details of the person, coming from the request
+ * @param {*} userInfo The details of the lovebomb, coming from the request
  * @param {*} state An empty placeholder
  * @param {*} ctx The context object for Akka Serverless
  * @return {*} returns an empty message
  */
-function saveUser(userInfo, state, ctx) {
-  userInfo.username = ctx.entityId;
-  console.log("com.coreyauger.lovebomb.user.UserService/SaveUser", userInfo);
-  ctx.updateState(user.create(userInfo));
+function saveLovebomb(lbInfo, state, ctx) {
+  lbInfo.id = ctx.entityId;
+  console.log("com.coreyauger.lovebomb.user.UserService/SaveUser", lbInfo);
+  ctx.updateState(lovebomb.create(lbInfo));
   return {};
 }
 
-export const GetUsersService = new as.View(
-  ["./proto/user-service.proto"],
-  "com.coreyauger.lovebomb.user.GetUsersService",
+export const GetLovebombService = new as.View(
+  ["./proto/lovebomb-service.proto"],
+  "com.coreyauger.lovebomb.lovebomb.GetLovebombService",
   {
-    viewId: "user",
+    viewId: "lovebomb",
   }
 );
 
-export const GetUserByScoreService = new as.View(
-  ["./proto/user-service.proto"],
-  "com.coreyauger.lovebomb.user.GetUserByScoreService",
+export const GetLovebombByUsernameService = new as.View(
+  ["./proto/lovebomb-service.proto"],
+  "com.coreyauger.lovebomb.lovebomb.GetLovebombByUsernameService",
   {
-    viewId: "scoreuser",
+    viewId: "usernamelovebomb",
   }
 );
 
-export const AllUsersService = new as.View(
-  ["./proto/user-service.proto"],
-  "com.coreyauger.lovebomb.user.AllUsersService",
+export const AllLovebombService = new as.View(
+  ["./proto/lovebomb-service.proto"],
+  "com.coreyauger.lovebomb.lovebomb.AllLovebombService",
   {
-    viewId: "allusers",
+    viewId: "alllovebomb",
   }
 );

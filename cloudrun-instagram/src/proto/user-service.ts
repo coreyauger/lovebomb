@@ -738,7 +738,7 @@ export const UserServiceService = {
     requestSerialize: (value: User) => Buffer.from(User.encode(value).finish()),
     requestDeserialize: (value: Buffer) => User.decode(value),
     responseSerialize: (value: google.protobuf.Empty) =>
-      Buffer.from(value.serializeBinary()),
+      Buffer.from(value.serialize()),
     responseDeserialize: (value: Buffer) =>
       google.protobuf.Empty.deserialize(value),
   },
@@ -800,9 +800,10 @@ export const GetUsersServiceService = {
   getUser: {
     path: "/com.coreyauger.lovebomb.user.GetUsersService/GetUser",
     requestStream: false,
-    responseStream: true,
-    requestSerialize: (value: User) => Buffer.from(User.encode(value).finish()),
-    requestDeserialize: (value: Buffer) => User.decode(value),
+    responseStream: false,
+    requestSerialize: (value: GetUserRequest) =>
+      Buffer.from(GetUserRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => GetUserRequest.decode(value),
     responseSerialize: (value: User) =>
       Buffer.from(User.encode(value).finish()),
     responseDeserialize: (value: Buffer) => User.decode(value),
@@ -811,7 +812,7 @@ export const GetUsersServiceService = {
 
 export interface GetUsersServiceServer extends UntypedServiceImplementation {
   updateUser: handleUnaryCall<User, User>;
-  getUser: handleServerStreamingCall<User, User>;
+  getUser: handleUnaryCall<GetUserRequest, User>;
 }
 
 export interface GetUsersServiceClient extends Client {
@@ -831,14 +832,20 @@ export interface GetUsersServiceClient extends Client {
     callback: (error: ServiceError | null, response: User) => void
   ): ClientUnaryCall;
   getUser(
-    request: User,
-    options?: Partial<CallOptions>
-  ): ClientReadableStream<User>;
+    request: GetUserRequest,
+    callback: (error: ServiceError | null, response: User) => void
+  ): ClientUnaryCall;
   getUser(
-    request: User,
-    metadata?: Metadata,
-    options?: Partial<CallOptions>
-  ): ClientReadableStream<User>;
+    request: GetUserRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: User) => void
+  ): ClientUnaryCall;
+  getUser(
+    request: GetUserRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: User) => void
+  ): ClientUnaryCall;
 }
 
 export const GetUsersServiceClient = makeGenericClientConstructor(
