@@ -1,7 +1,7 @@
 {
   "name": "@coreyauger/lovebomb-lovebomb-service",
-  "version": "0.1.6",
-  "description": "Lovebomb Lovebomb - Value Entity Service",
+  "version": "0.1.7",
+  "description": "Lovebomb Lovebomb - User Value Entity Service",
   "license": "MIT",
   "main": "./app/index.js",
   "author": {

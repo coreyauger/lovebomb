@@ -60,7 +60,6 @@ message Lovebomb {
     repeated DisplayResource display_resource = 5;
     string accessibility_caption = 6;    
     bool has_audio = 7;
-    string video_url = 8;
     string shortcode = 9;
     float video_duration = 10;
     string title = 11;

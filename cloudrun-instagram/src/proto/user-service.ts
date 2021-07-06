@@ -15,7 +15,7 @@ import {
   ServiceError,
 } from "@grpc/grpc-js";
 import _m0 from "protobufjs/minimal";
-import { google } from "../google/protobuf/empty";
+import { Empty } from "../google/protobuf/empty";
 
 export const protobufPackage = "com.coreyauger.lovebomb.user";
 
@@ -43,7 +43,7 @@ export interface User {
 }
 
 export interface GetUserRequest {
-  id: string;
+  username: string;
 }
 
 export interface GetUsersByBomberScoreRequest {
@@ -436,15 +436,15 @@ export const User = {
   },
 };
 
-const baseGetUserRequest: object = { id: "" };
+const baseGetUserRequest: object = { username: "" };
 
 export const GetUserRequest = {
   encode(
     message: GetUserRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.id !== "") {
-      writer.uint32(10).string(message.id);
+    if (message.username !== "") {
+      writer.uint32(10).string(message.username);
     }
     return writer;
   },
@@ -457,7 +457,7 @@ export const GetUserRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.id = reader.string();
+          message.username = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -469,26 +469,26 @@ export const GetUserRequest = {
 
   fromJSON(object: any): GetUserRequest {
     const message = { ...baseGetUserRequest } as GetUserRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
+    if (object.username !== undefined && object.username !== null) {
+      message.username = String(object.username);
     } else {
-      message.id = "";
+      message.username = "";
     }
     return message;
   },
 
   toJSON(message: GetUserRequest): unknown {
     const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
+    message.username !== undefined && (obj.username = message.username);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GetUserRequest>): GetUserRequest {
     const message = { ...baseGetUserRequest } as GetUserRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
+    if (object.username !== undefined && object.username !== null) {
+      message.username = object.username;
     } else {
-      message.id = "";
+      message.username = "";
     }
     return message;
   },
@@ -737,41 +737,31 @@ export const UserServiceService = {
     responseStream: false,
     requestSerialize: (value: User) => Buffer.from(User.encode(value).finish()),
     requestDeserialize: (value: Buffer) => User.decode(value),
-    responseSerialize: (value: google.protobuf.Empty) =>
-      Buffer.from(value.serialize()),
-    responseDeserialize: (value: Buffer) =>
-      google.protobuf.Empty.deserialize(value),
+    responseSerialize: (value: Empty) =>
+      Buffer.from(Empty.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => Empty.decode(value),
   },
 } as const;
 
 export interface UserServiceServer extends UntypedServiceImplementation {
-  saveUser: handleUnaryCall<User, google.protobuf.Empty>;
+  saveUser: handleUnaryCall<User, Empty>;
 }
 
 export interface UserServiceClient extends Client {
   saveUser(
     request: User,
-    callback: (
-      error: ServiceError | null,
-      response: google.protobuf.Empty
-    ) => void
+    callback: (error: ServiceError | null, response: Empty) => void
   ): ClientUnaryCall;
   saveUser(
     request: User,
     metadata: Metadata,
-    callback: (
-      error: ServiceError | null,
-      response: google.protobuf.Empty
-    ) => void
+    callback: (error: ServiceError | null, response: Empty) => void
   ): ClientUnaryCall;
   saveUser(
     request: User,
     metadata: Metadata,
     options: Partial<CallOptions>,
-    callback: (
-      error: ServiceError | null,
-      response: google.protobuf.Empty
-    ) => void
+    callback: (error: ServiceError | null, response: Empty) => void
   ): ClientUnaryCall;
 }
 

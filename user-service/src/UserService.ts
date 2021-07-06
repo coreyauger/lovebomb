@@ -73,7 +73,7 @@ export const GetUsersService = new as.View(
   ["./proto/user-service.proto"],
   "com.coreyauger.lovebomb.user.GetUsersService",
   {
-    viewId: "user",
+    viewId: "username",
   }
 );
 

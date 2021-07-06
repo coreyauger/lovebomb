@@ -9,6 +9,10 @@ import {
   Lovebomb_MediaType,
 } from "./proto/lovebomb-service";
 
+const userServiceEndpoint = "old-paper-1789.us-east1.akkaserverlessapps.com";
+const lovebombServiceEndpoint =
+  "polished-dust-2316.us-east1.akkaserverlessapps.com";
+
 dotenv.config();
 
 const { username, password } = process.env;
@@ -75,11 +79,11 @@ const client = new Instagram({ username, password });
 
 (async () => {
   const userClient = new UserServiceClient(
-    "plain-feather-8545.us-east1.apps.akkaserverless.dev:443",
+    `${userServiceEndpoint}:443`,
     credentials.createSsl()
   );
   const lovebombClient = new LovebombServiceClient(
-    "wispy-sun-2887.us-east1.apps.akkaserverless.dev:443",
+    `${lovebombServiceEndpoint}:443`,
     credentials.createSsl()
   );
 

@@ -57,7 +57,7 @@ message User {
 
 
 message GetUserRequest {
-    string id = 1 [(.akkaserverless.field).entity_key = true];
+    string username = 1;
 }
 
 
@@ -100,13 +100,13 @@ service GetUsersService {
             }
         };
         option (.akkaserverless.method).view.update = {
-            table: "user"
+            table: "username"
         };
     }
 
     rpc GetUser(GetUserRequest) returns (User) {
         option (.akkaserverless.method).view.query = {
-            query: "SELECT * FROM user WHERE username = :username"
+            query: "SELECT * FROM username WHERE username = :username"
         };
         option (google.api.http) = {
             get: "/user/username"
