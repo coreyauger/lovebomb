@@ -15,7 +15,7 @@ import {
   ServiceError,
 } from "@grpc/grpc-js";
 import _m0 from "protobufjs/minimal";
-import { Empty } from "../google/protobuf/empty";
+import { google } from "../google/protobuf/empty";
 
 export const protobufPackage = "com.coreyauger.lovebomb.lovebomb";
 
@@ -46,6 +46,7 @@ export interface Lovebomb {
   displayResource: DisplayResource[];
   accessibilityCaption: string;
   hasAudio: boolean;
+  videoUrl: string;
   shortcode: string;
   videoDuration: number;
   title: string;
@@ -371,6 +372,7 @@ const baseLovebomb: object = {
   displayUrl: "",
   accessibilityCaption: "",
   hasAudio: false,
+  videoUrl: "",
   shortcode: "",
   videoDuration: 0,
   title: "",
@@ -403,6 +405,9 @@ export const Lovebomb = {
     }
     if (message.hasAudio === true) {
       writer.uint32(56).bool(message.hasAudio);
+    }
+    if (message.videoUrl !== "") {
+      writer.uint32(66).string(message.videoUrl);
     }
     if (message.shortcode !== "") {
       writer.uint32(74).string(message.shortcode);
@@ -455,6 +460,9 @@ export const Lovebomb = {
           break;
         case 7:
           message.hasAudio = reader.bool();
+          break;
+        case 8:
+          message.videoUrl = reader.string();
           break;
         case 9:
           message.shortcode = reader.string();
@@ -526,6 +534,11 @@ export const Lovebomb = {
     } else {
       message.hasAudio = false;
     }
+    if (object.videoUrl !== undefined && object.videoUrl !== null) {
+      message.videoUrl = String(object.videoUrl);
+    } else {
+      message.videoUrl = "";
+    }
     if (object.shortcode !== undefined && object.shortcode !== null) {
       message.shortcode = String(object.shortcode);
     } else {
@@ -579,6 +592,7 @@ export const Lovebomb = {
     message.accessibilityCaption !== undefined &&
       (obj.accessibilityCaption = message.accessibilityCaption);
     message.hasAudio !== undefined && (obj.hasAudio = message.hasAudio);
+    message.videoUrl !== undefined && (obj.videoUrl = message.videoUrl);
     message.shortcode !== undefined && (obj.shortcode = message.shortcode);
     message.videoDuration !== undefined &&
       (obj.videoDuration = message.videoDuration);
@@ -635,6 +649,11 @@ export const Lovebomb = {
       message.hasAudio = object.hasAudio;
     } else {
       message.hasAudio = false;
+    }
+    if (object.videoUrl !== undefined && object.videoUrl !== null) {
+      message.videoUrl = object.videoUrl;
+    } else {
+      message.videoUrl = "";
     }
     if (object.shortcode !== undefined && object.shortcode !== null) {
       message.shortcode = object.shortcode;
@@ -880,31 +899,41 @@ export const LovebombServiceService = {
     requestSerialize: (value: Lovebomb) =>
       Buffer.from(Lovebomb.encode(value).finish()),
     requestDeserialize: (value: Buffer) => Lovebomb.decode(value),
-    responseSerialize: (value: Empty) =>
-      Buffer.from(Empty.encode(value).finish()),
-    responseDeserialize: (value: Buffer) => Empty.decode(value),
+    responseSerialize: (value: google.protobuf.Empty) =>
+      Buffer.from(value.serialize()),
+    responseDeserialize: (value: Buffer) =>
+      google.protobuf.Empty.deserialize(value),
   },
 } as const;
 
 export interface LovebombServiceServer extends UntypedServiceImplementation {
-  saveLovebomb: handleUnaryCall<Lovebomb, Empty>;
+  saveLovebomb: handleUnaryCall<Lovebomb, google.protobuf.Empty>;
 }
 
 export interface LovebombServiceClient extends Client {
   saveLovebomb(
     request: Lovebomb,
-    callback: (error: ServiceError | null, response: Empty) => void
+    callback: (
+      error: ServiceError | null,
+      response: google.protobuf.Empty
+    ) => void
   ): ClientUnaryCall;
   saveLovebomb(
     request: Lovebomb,
     metadata: Metadata,
-    callback: (error: ServiceError | null, response: Empty) => void
+    callback: (
+      error: ServiceError | null,
+      response: google.protobuf.Empty
+    ) => void
   ): ClientUnaryCall;
   saveLovebomb(
     request: Lovebomb,
     metadata: Metadata,
     options: Partial<CallOptions>,
-    callback: (error: ServiceError | null, response: Empty) => void
+    callback: (
+      error: ServiceError | null,
+      response: google.protobuf.Empty
+    ) => void
   ): ClientUnaryCall;
 }
 
